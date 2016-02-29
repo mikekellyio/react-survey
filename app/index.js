@@ -2,6 +2,11 @@ import './styles/main.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Hello from './components/hello';
+import AppContainer from './components/AppContainer';
 
-var rootInstance = ReactDOM.render(<Hello />, document.getElementById('app'));
+import State from './State';
+
+import './reactions/GameReactions';
+State.trigger('games:fetch');
+
+var rootInstance = ReactDOM.render(<AppContainer />, document.getElementById('app'));
