@@ -54,7 +54,17 @@ const common = {
         // Parse only app files! Without this it will go through entire project.
         // In addition to being slow, that will most likely result in an error.
         include: PATHS.app
-      }
+      },
+      {
+        test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: "url?limit=10000"
+      },
+      {
+        test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
+        loader: 'file'
+      },
+      // Bootstrap 3
+      { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports?jQuery=jquery' },
     ]
   },
   sassLoader: {
@@ -91,6 +101,13 @@ if(TARGET === 'start' || !TARGET) {
       port: process.env.PORT
     },
     plugins: [
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('development')
+
+        // You can set this to JSON.stringify('development') for your
+        // development target to force NODE_ENV to development mode
+        // no matter what
+      }),
       new webpack.HotModuleReplacementPlugin(),
       new NpmInstallPlugin({
         save: true // --save
