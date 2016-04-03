@@ -2,7 +2,7 @@ const path = require('path');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const NpmInstallPlugin = require('npm-install-webpack-plugin');
-
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
@@ -14,7 +14,7 @@ const PATHS = {
 process.env.BABEL_ENV = TARGET;
 
 const common = {
-  devtool: 'eval-source-map',
+
   // Entry accepts a path or an object of entries. We'll be using the
   // latter form given it's convenient with more complex configurations.
   entry: {
@@ -76,6 +76,7 @@ const common = {
 // Default configuration
 if(TARGET === 'start' || !TARGET) {
   module.exports = merge(common, {
+    devtool: 'eval-source-map',
     devServer: {
       contentBase: PATHS.build,
 
@@ -130,7 +131,9 @@ if(TARGET === 'build') {
         // development target to force NODE_ENV to development mode
         // no matter what
       }),
+
       new webpack.optimize.UglifyJsPlugin({
+        minimize: true,
         compress: {
           warnings: false
         }

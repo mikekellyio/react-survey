@@ -22,7 +22,6 @@ State
         })
     })
     .on('team:update', function(data){
-      console.log('team:update', data)
       var game = _.find(State.get().games, function(game){
         return game.id == data.game.id
       })
@@ -32,7 +31,6 @@ State
           return team.id == data.id
         })
         if(team){
-          console.log(team)
           team.set(data)
         }else{
           game.teams.push(data)

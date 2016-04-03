@@ -3,6 +3,8 @@ import State from '../State';
 import Loading from '../components/Loading';
 import Game from '../components/Game';
 import _ from 'lodash';
+import config from '../config';
+
 
 var GamePage = React.createClass({
   getInitialState(){
@@ -13,7 +15,7 @@ var GamePage = React.createClass({
     var game = this.state.game;
 
     if(game){
-      return <Game game={game} />
+      return <Game game={game} cable={this.state.cable}/>
     }else{
       return <div />;
     }
@@ -25,16 +27,19 @@ var GamePage = React.createClass({
 
   componentDidMount(){
     // Make the app reactive
-    console.log("GamePage mounted", this.props.store)
-    var me = this;
     State.on('update', this.update );
-    State.trigger('game:fetch', {id: this.props.params.gameId}, this.props.params.password)
+    State.trigger('game:fetch', this.props.params.gameId, this.props.params.password)
+
+    State.trigger('game:subscribe', this.props.params.gameId, this.props.params.password)
+
   },
+  
   componentWillUnmount(){
     State.off('update', this.update );
+    State.trigger('game:unsubscribe', this.props.params.gameId)
   },
+
   update(){
-    console.log("updating "+this.props.params.gameId, this.props.store)
     this.setState({game: this.findGameById(State.get(), this.props.params.gameId)})
   }
 });

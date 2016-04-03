@@ -5,18 +5,24 @@ import _ from 'lodash';
 import { browserHistory } from 'react-router'
 
 State
+    .on('beforeAll', function( eventName, ...args ){
+        if(process.env.NODE_ENV == "development"){
+          console.log( eventName, args );
+        }
+    })
     .on('games:fetch', function () {
-      console.log('games:fetch')
       State.get().set({status: 'loading', message: "Fetching active games..."});
       $.get(config.api_url + "games")
+        .fail(function(){
+          State.get().set({status: 'error', message: "Failed to get games."});
+        })
         .done(function(data){
           State.get().set({status: 'ready', message: "Fetching active games...",games: data});
         })
     })
-    .on('game:fetch', function (game, password) {
-      console.log('game:fetch', game, password)
+    .on('game:fetch', function (gameId, password) {
       State.get().set({status: 'loading', message: "Loading game..."});
-      $.get(config.api_url + "games/"+game.id, {password: password})
+      $.get(config.api_url + "games/"+gameId, {password: password})
         .done(function(data){
           data.password = password
           State.trigger('game:update', data)
@@ -26,8 +32,7 @@ State
         })
     })
     .on('game:update', function(game){
-      console.log('game:update', game)
-      var state = State.get().set({status: 'ready', message: "Fetching active games..."});
+      var state = State.get().set({status: 'ready', message: "Fetching game..."});
       var oldGame = _.find(state.games, function(g){return g.id == game.id})
       if(oldGame){
         oldGame.set(game)
@@ -37,11 +42,25 @@ State
 
     })
     .on('game:search', function (query) {
-      console.log('game:search', query)
+
     })
     .on('game:reset-score', function(game){
-      console.log('game:reset-score', game)
       _.each(game.teams, function(team){
         State.trigger('team:set-score', team, 0)
       })
+    })
+    .on('game:subscribe', (gameId, password) => {
+      var state = State.get()
+      var game =  _.find(state.games, function(g){return g.id == gameId})
+      if(password){
+        var interval = setInterval( ()=> {
+          State.trigger("game:fetch", gameId, password)
+        }, 1000);
+        game.set({subscription: interval})
+      }
+    })
+    .on("game:unsubscribe", (gameId) =>{
+      var state = State.get()
+      var game =  _.find(state.games, function(g){return g.id == gameId})
+      clearInterval(game.subscription)
     })

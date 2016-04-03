@@ -1,9 +1,9 @@
 if(process.env.NODE_ENV == 'development'){
   module.exports = {
-      api_url: 'http://localhost:4000/'
+      api_url: 'http://gametime-api.dev/api/',
   };
 }else{
   module.exports = {
-      api_url: 'http://gametime-api.com'
+      api_url: 'http://gametime-api.herokuapp.com/api/'
   };
 }
