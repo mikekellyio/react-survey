@@ -4,6 +4,6 @@ if(process.env.NODE_ENV == 'development'){
   };
 }else{
   module.exports = {
-      api_url: 'http://gametime-api.herokuapp.com/api/'
+      api_url: '//gametime-api.herokuapp.com/api/'
   };
 }
