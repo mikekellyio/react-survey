@@ -11,7 +11,13 @@ app.use(express.static(static_path))
     res.sendFile('index.html', {
       root: static_path
     });
-  }).listen(process.env.PORT || 8080, function (err) {
+  })
+  .get('/games*', function (req, res) {
+    res.sendFile('index.html', {
+      root: static_path
+    });
+  })
+  .listen(process.env.PORT || 8080, function (err) {
     if (err) { console.log(err) };
     console.log('Listening at localhost:8080');
   });
