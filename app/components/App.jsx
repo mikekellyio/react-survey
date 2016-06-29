@@ -1,8 +1,6 @@
 import React from 'react';
 import State from '../State';
-import Loading from './Loading';
 import {Link, browserHistory } from 'react-router';
-import Menu from './Menu';
 
 var App = React.createClass( {
   componentDidMount(){

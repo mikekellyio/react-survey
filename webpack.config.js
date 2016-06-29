@@ -8,7 +8,7 @@ const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
   app: path.join(__dirname, 'app'),
   build: path.join(__dirname, 'build'),
-  style: path.join(__dirname, 'app/styles')
+  style: path.join(__dirname, 'app/styles', 'main.scss')
 };
 
 process.env.BABEL_ENV = TARGET;
@@ -18,6 +18,7 @@ const common = {
   // Entry accepts a path or an object of entries. We'll be using the
   // latter form given it's convenient with more complex configurations.
   entry: {
+    style: PATHS.style,
     app: PATHS.app
   },
   // Add resolve.extensions.
@@ -42,7 +43,7 @@ const common = {
       {
         test: /\.scss$/,
         loaders: ['style', 'css', 'sass'],
-        include: PATHS.style
+        includes: [PATHS.style, './node_modules/bootstrap-sass/assets']
       },
       // Set up jsx. This accepts js too thanks to RegExp
       {
@@ -68,7 +69,7 @@ const common = {
     ]
   },
   sassLoader: {
-    includePaths: [path.resolve(__dirname, PATHS.style)]
+    includePaths: [path.resolve(__dirname, PATHS.style), 'node_modules/bootstrap-sass/assets/stylesheets']
   }
 };
 
